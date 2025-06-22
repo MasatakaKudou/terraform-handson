@@ -11,3 +11,24 @@ services:
     volumes:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
+  terraform:
+    image: hashicorp/terraform
+    container_name: terraform-runner
+    working_dir: /workspace
+    entrypoint: [""]
+    command: sh -c "while true; do sleep 1000; done"
+    env_file: .env
+    volumes:
+      - ./terraform:/workspace
+      - ~/.aws:/root/.aws:ro
+    depends_on:
+      - localstack
+  aws-cli:
+    image: amazon/aws-cli
+    container_name: aws-cli
+    env_file: .env
+    volumes:
+      - ./aws-cli:/aws-cli
+    working_dir: /aws-cli
+    entrypoint: sh
+    tty: true

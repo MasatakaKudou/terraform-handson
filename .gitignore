@@ -1,1 +1,4 @@
 volume
+.terraform*
+*.tfstate*
+s3.tf
