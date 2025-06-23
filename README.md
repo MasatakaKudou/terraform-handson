@@ -78,7 +78,7 @@ terraform plan
 
 ```hcl
 resource "aws_s3_bucket" "s3-bucket" {
-  bucket = "localstack-test-bucket"
+  bucket = "handson-bucket"
 }
 ```
 
@@ -101,7 +101,7 @@ Terraform will perform the following actions:
       + acceleration_status         = (known after apply)
       + acl                         = (known after apply)
       + arn                         = (known after apply)
-      + bucket                      = "localstack-test-bucket"
+      + bucket                      = "handson-bucket"
       + bucket_domain_name          = (known after apply)
       + bucket_prefix               = (known after apply)
       + bucket_regional_domain_name = (known after apply)
@@ -159,19 +159,19 @@ docker compose exec aws-cli sh
 ### 4-2. アップロードする
 
 ```
-aws --endpoint-url=http://localstack:4566 s3 cp hello.html s3://localstack-test-bucket/
+aws --endpoint-url=http://localstack:4566 s3 cp hello.html s3://handson-bucket/
 ```
 
 以下の出力があればアップロード成功
 
-`upload: ./hello.html to s3://localstack-test-bucket/hello.html`
+`upload: ./hello.html to s3://handson-bucket/hello.html`
 
 ### 4-3. アップロードされているか確認
 
 以下のURLをブラウザから確認
 
 ```
-http://localhost:4566/localstack-test-bucket/hello.html
+http://localhost:4566/handson-bucket/hello.html
 ```
 
 以下の画面が表示されればOK
@@ -190,7 +190,7 @@ docker compose exec terraform sh
 
 ```hcl
 resource "aws_s3_bucket" "s3-bucket" {
-  bucket = "localstack-test-bucket"
+  bucket = "handson-bucket"
 
   tags = {
     Environment = "dev"
@@ -240,7 +240,7 @@ docker compose exec aws-cli sh
 バケットに紐づくタグを取得する
 
 ```
-aws --endpoint-url=http://localstack:4566 s3api get-bucket-tagging --bucket localstack-test-bucket
+aws --endpoint-url=http://localstack:4566 s3api get-bucket-tagging --bucket handson-bucket
 ```
 
 以下の出力があれば実際に反映されている
@@ -266,7 +266,7 @@ aws --endpoint-url=http://localstack:4566 s3api get-bucket-tagging --bucket loca
 
 ```hcl
 # resource "aws_s3_bucket" "s3-bucket" {
-#   bucket = "localstack-test-bucket"
+#   bucket = "handson-bucket"
 # 
 #   tags = {
 #     Environment = "dev"
@@ -286,7 +286,7 @@ terraform plan
 ```hcl
   # aws_s3_bucket.s3-bucket will be destroyed
   - resource "aws_s3_bucket" "s3-bucket" {
-      - arn    = "arn:aws:s3:::localstack-test-bucket" -> null
+      - arn    = "arn:aws:s3:::handson-bucket" -> null
       ...
     }
 
