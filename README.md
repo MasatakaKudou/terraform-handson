@@ -333,7 +333,7 @@ aws-cli実行環境に入る
 docker compose exec aws-cli sh
 ```
 
-バケットに紐づくタグを取得する
+バケット一覧を取得する
 
 ```
 aws --endpoint-url=http://localstack:4566 s3api list-buckets
