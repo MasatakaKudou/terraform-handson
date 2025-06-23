@@ -82,7 +82,7 @@ resource "aws_s3_bucket" "s3-bucket" {
 }
 ```
 
-### 3-2. 実行計画をプレビュー
+### 3-2. 実行計画を確認
 
 ```
 terraform plan
@@ -138,7 +138,7 @@ Terraform will perform the following actions:
 Plan: 1 to add, 0 to change, 0 to destroy.
 ```
 
-### 3-3. AWS環境に反映
+### 3-3. AWSに反映
 
 ```
 terraform apply
@@ -177,3 +177,88 @@ http://localhost:4566/localstack-test-bucket/hello.html
 以下の画面が表示されればOK
 
 ![スクリーンショット 2025-06-23 9 48 32](https://github.com/user-attachments/assets/abd69ce1-321d-428c-9723-7cff469208eb)
+
+## 5. S3バケットの変更を試してみよう
+
+### 5-1. terraform実行環境に入る
+
+```
+docker compose exec terraform sh
+```
+
+### 5-2. `s3.tf` を編集して、バケットにタグを追加
+
+```
+resource "aws_s3_bucket" "s3-bucket" {
+  bucket = "localstack-test-bucket"
+
+  tags = {
+    Environment = "dev"
+    ManagedBy   = "terraform"
+  }
+}
+```
+
+### 5-3. 実行計画を確認
+
+```
+terraform plan
+```
+
+以下の出力を見て想定通りの実行計画か確認
+
+```
+# aws_s3_bucket.s3-bucket will be updated in-place
+~ resource "aws_s3_bucket" "s3-bucket" {
+  ~ tags_all                    = {
+    + "Environment" = "dev"
+    + "ManagedBy"   = "terraform"
+  }
+}
+
+Plan: 0 to add, 1 to change, 0 to destroy.
+```
+
+### 5-4. AWSに反映
+
+```
+terraform apply
+```
+
+以下の出力があれば反映成功
+
+```
+Apply complete! Resources: 0 added, 1 changed, 0 destroyed.
+```
+
+### 5-5. AWS上で確認
+
+aws-cli実行環境に入る
+
+```
+docker compose exec aws-cli sh
+```
+
+バケットに紐づくタグを取得する
+
+```
+aws --endpoint-url=http://localstack:4566 s3api get-bucket-tagging --bucket localstack-test-bucket
+```
+
+以下の出力があれば実際に反映されている
+
+```
+{
+    "TagSet": [
+        {
+            "Key": "Environment",
+            "Value": "dev"
+        },
+        {
+            "Key": "ManagedBy",
+            "Value": "terraform"
+        }
+    ]
+}
+```
+
