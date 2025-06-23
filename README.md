@@ -18,6 +18,10 @@
 
 以降は `docker compose` をベースに説明していく
 
+1-3. 期待しているコンテナが立ち上がっているか確認
+
+`docker compose ps`
+
 以下コンテナが立ち上がる想定
 
 | TH | TH |
@@ -25,10 +29,6 @@
 | aws-cli | aws-cli実行環境 |
 | localstack | 擬似AWS環境 |
 | terraform | terraform実行環境 |
-
-1-3. 期待しているコンテナが立ち上がっているか確認
-
-`docker compose ps`
 
 `STATUS` が全てUpになってればOK
 
