@@ -24,7 +24,7 @@
 
 以下コンテナが立ち上がる想定
 
-| TH | TH |
+| コンテナ名 | 用途 |
 | ---- | ---- |
 | aws-cli | aws-cli実行環境 |
 | localstack | 擬似AWS環境 |
@@ -42,13 +42,21 @@
 
 `terraform init`
 
+以下の出力があれば初期化完了！
+
+`Terraform has been successfully initialized!`
+
 ### 2-3. 実行計画をプレビュー
 
 `terraform plan`
 
+以下の出力があればプラン成功！現時点ではリソース定義していないので変更なし
+
+`No changes. Your infrastructure matches the configuration.`
+
 ## 3. S3バケットを作成してAWSに反映してみよう
 
-### 3-1. terraformディレクトリ配下に `s3.tf`を作成し、以下を記述
+### 3-1. カレントディレクトリに`s3.tf`を作成し、以下を記述
 
 ```
 resource "aws_s3_bucket" "s3-bucket" {
@@ -59,6 +67,56 @@ resource "aws_s3_bucket" "s3-bucket" {
 ### 3-2. 実行計画をプレビュー
 
 `terraform plan`
+
+反映しても問題ないか実行計画を確認
+
+```
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # aws_s3_bucket.s3-bucket will be created
+  + resource "aws_s3_bucket" "s3-bucket" {
+      + acceleration_status         = (known after apply)
+      + acl                         = (known after apply)
+      + arn                         = (known after apply)
+      + bucket                      = "localstack-test-bucket"
+      + bucket_domain_name          = (known after apply)
+      + bucket_prefix               = (known after apply)
+      + bucket_regional_domain_name = (known after apply)
+      + force_destroy               = false
+      + hosted_zone_id              = (known after apply)
+      + id                          = (known after apply)
+      + object_lock_enabled         = (known after apply)
+      + policy                      = (known after apply)
+      + region                      = (known after apply)
+      + request_payer               = (known after apply)
+      + tags_all                    = (known after apply)
+      + website_domain              = (known after apply)
+      + website_endpoint            = (known after apply)
+
+      + cors_rule (known after apply)
+
+      + grant (known after apply)
+
+      + lifecycle_rule (known after apply)
+
+      + logging (known after apply)
+
+      + object_lock_configuration (known after apply)
+
+      + replication_configuration (known after apply)
+
+      + server_side_encryption_configuration (known after apply)
+
+      + versioning (known after apply)
+
+      + website (known after apply)
+    }
+
+Plan: 1 to add, 0 to change, 0 to destroy.
+```
 
 ### 3-3. AWS環境に反映
 
@@ -76,10 +134,18 @@ resource "aws_s3_bucket" "s3-bucket" {
 
 ### 4-2. アップロードする
 
-`aws --endpoint-url=http://localhost:4566 s3 cp hello.png s3://localstack-test-bucket/`
+`aws --endpoint-url=http://localstack:4566 s3 cp hello.html s3://localstack-test-bucket/`
+
+以下の出力があればアップロード成功
+
+`upload: ./hello.html to s3://localstack-test-bucket/hello.html`
 
 ### 4-3. アップロードされているか確認
 
-以下のURLから確認
+以下のURLをブラウザから確認
 
 `http://localhost:4566/localstack-test-bucket/hello.html`
+
+以下の画面が表示されればOK
+
+![スクリーンショット 2025-06-23 9 48 32](https://github.com/user-attachments/assets/abd69ce1-321d-428c-9723-7cff469208eb)
