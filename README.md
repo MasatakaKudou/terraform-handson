@@ -260,3 +260,71 @@ aws --endpoint-url=http://localstack:4566 s3api get-bucket-tagging --bucket loca
 }
 ```
 
+## 6. S3バケットの削除を試してみよう
+
+### 6-1. `s3.tf` をコメントアウト
+
+```hcl
+# resource "aws_s3_bucket" "s3-bucket" {
+#   bucket = "localstack-test-bucket"
+# 
+#   tags = {
+#     Environment = "dev"
+#     ManagedBy   = "terraform"
+#   }
+# }
+```
+
+### 6-2. 実行計画を確認
+
+```
+terraform plan
+```
+
+以下の出力を見て想定通りの実行計画か確認
+
+```hcl
+  # aws_s3_bucket.s3-bucket will be destroyed
+  - resource "aws_s3_bucket" "s3-bucket" {
+      - arn    = "arn:aws:s3:::localstack-test-bucket" -> null
+      ...
+    }
+
+Plan: 0 to add, 0 to change, 1 to destroy.
+```
+
+### 6-3. AWSに反映
+
+```
+terraform apply
+```
+
+以下の出力があれば反映成功
+
+`Apply complete! Resources: 0 added, 0 changed, 1 destroyed.`
+
+### 6-4. AWS上で確認
+
+aws-cli実行環境に入る
+
+```
+docker compose exec aws-cli sh
+```
+
+バケットに紐づくタグを取得する
+
+```
+aws --endpoint-url=http://localstack:4566 s3api list-buckets
+```
+
+以下の出力があれば実際に削除されている
+
+```
+{
+    "Buckets": [],
+    "Owner": {
+        "DisplayName": "webfile",
+        "ID": "1234567890"
+    }
+}
+```
