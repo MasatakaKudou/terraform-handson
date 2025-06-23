@@ -10,17 +10,29 @@
 
 ### 1-1. クローンする
 
-`git clone git@github.com:MasatakaKudou/terraform-handson.git`
+```
+git clone git@github.com:MasatakaKudou/terraform-handson.git
+```
 
 ### 1-2. プロジェクトに移動しコンテナ起動
 
-`docker compose up -d` or `docker-compose up -d`
+```
+docker compose up -d
+```
+
+or
+
+```
+docker-compose up -d
+```
 
 以降は `docker compose` をベースに説明していく
 
 ### 1-3. 期待しているコンテナが立ち上がっているか確認
 
-`docker compose ps`
+```
+docker compose ps
+```
 
 以下コンテナが立ち上がる想定
 
@@ -36,11 +48,15 @@
 
 ### 2-1. terraform実行環境に入る
 
-`docker compose exec terraform sh`
+```
+docker compose exec terraform sh
+```
 
 ### 2-2. 初期化を行う
 
-`terraform init`
+```
+terraform init
+```
 
 以下の出力があれば初期化完了！
 
@@ -48,7 +64,9 @@
 
 ### 2-3. 実行計画をプレビュー
 
-`terraform plan`
+```
+terraform plan
+```
 
 以下の出力があればプラン成功！現時点ではリソース定義していないので変更なし
 
@@ -66,7 +84,9 @@ resource "aws_s3_bucket" "s3-bucket" {
 
 ### 3-2. 実行計画をプレビュー
 
-`terraform plan`
+```
+terraform plan
+```
 
 反映しても問題ないか実行計画を確認
 
@@ -120,7 +140,9 @@ Plan: 1 to add, 0 to change, 0 to destroy.
 
 ### 3-3. AWS環境に反映
 
-`terraform apply`
+```
+terraform apply
+```
 
 以下の出力があれば反映成功
 
@@ -130,11 +152,15 @@ Plan: 1 to add, 0 to change, 0 to destroy.
 
 ### 4-1. aws-cli実行環境に入る
 
-`docker compose exec aws-cli sh`
+```
+docker compose exec aws-cli sh
+```
 
 ### 4-2. アップロードする
 
-`aws --endpoint-url=http://localstack:4566 s3 cp hello.html s3://localstack-test-bucket/`
+```
+aws --endpoint-url=http://localstack:4566 s3 cp hello.html s3://localstack-test-bucket/
+```
 
 以下の出力があればアップロード成功
 
@@ -144,7 +170,9 @@ Plan: 1 to add, 0 to change, 0 to destroy.
 
 以下のURLをブラウザから確認
 
-`http://localhost:4566/localstack-test-bucket/hello.html`
+```
+http://localhost:4566/localstack-test-bucket/hello.html
+```
 
 以下の画面が表示されればOK
 
