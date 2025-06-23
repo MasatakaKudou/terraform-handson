@@ -207,7 +207,7 @@ terraform plan
 
 以下の出力を見て想定通りの実行計画か確認
 
-```
+```hcl
 # aws_s3_bucket.s3-bucket will be updated in-place
 ~ resource "aws_s3_bucket" "s3-bucket" {
   ~ tags_all                    = {
