@@ -90,7 +90,7 @@ terraform plan
 
 反映しても問題ないか実行計画を確認
 
-```
+```hcl
 Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
   + create
 
@@ -188,7 +188,7 @@ docker compose exec terraform sh
 
 ### 5-2. `s3.tf` を編集して、バケットにタグを追加
 
-```
+```hcl
 resource "aws_s3_bucket" "s3-bucket" {
   bucket = "localstack-test-bucket"
 
