@@ -76,7 +76,7 @@ terraform plan
 
 ### 3-1. カレントディレクトリに`s3.tf`を作成し、以下を記述
 
-```
+```hcl
 resource "aws_s3_bucket" "s3-bucket" {
   bucket = "localstack-test-bucket"
 }
