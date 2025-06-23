@@ -293,7 +293,29 @@ terraform plan
 Plan: 0 to add, 0 to change, 1 to destroy.
 ```
 
+### 6-3. オブジェクトを削除
+
+aws-cli実行環境に入る
+
+```
+docker compose exec aws-cli sh
+```
+
+オブジェクトを削除
+
+```
+aws --endpoint-url=http://localstack:4566 s3 rm s3://localstack-test-bucket/ --recursive
+```
+
+もしかしたらこれも必要かも（バージョニングが効いてる場合）
+
+```
+aws --endpoint-url=http://localstack:4566 s3api delete-object --bucket handson-bucket --key hello.html
+```
+
 ### 6-3. AWSに反映
+
+terraform実行環境に入る
 
 ```
 terraform apply
@@ -317,7 +339,7 @@ docker compose exec aws-cli sh
 aws --endpoint-url=http://localstack:4566 s3api list-buckets
 ```
 
-以下の出力があれば実際に削除されている
+Bucketsに該当のバケットが存在しなければ実際に削除されている
 
 ```
 {
@@ -327,4 +349,18 @@ aws --endpoint-url=http://localstack:4566 s3api list-buckets
         "ID": "1234567890"
     }
 }
+```
+
+## 7. 掃除
+
+### コンテナを停止
+
+```
+docker compose down
+```
+
+### プロジェクトを削除
+
+```
+rm -rf terraform-handson
 ```
