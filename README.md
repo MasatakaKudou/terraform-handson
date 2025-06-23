@@ -227,9 +227,7 @@ terraform apply
 
 以下の出力があれば反映成功
 
-```
-Apply complete! Resources: 0 added, 1 changed, 0 destroyed.
-```
+`Apply complete! Resources: 0 added, 1 changed, 0 destroyed.`
 
 ### 5-5. AWS上で確認
 
