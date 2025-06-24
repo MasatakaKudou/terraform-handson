@@ -44,13 +44,26 @@ docker compose ps
 
 `STATUS` が全てUpになってればOK
 
-## 2. Terraformを実行してみよう
+### 1-4. Terraform/AWS CLI実行環境を行き来するため、ターミナルを2分割して操作する
 
-### 2-1. terraform実行環境に入る
+terraform実行環境に以下コマンドで入る
 
 ```
 docker compose exec terraform sh
 ```
+aws-cli実行環境に以下コマンドで入る
+
+```
+docker compose exec aws-cli sh
+```
+
+イメージは以下の通り
+
+<img width="1504" alt="スクリーンショット 2025-06-24 14 12 50" src="https://github.com/user-attachments/assets/ebbc6b0c-6994-45e8-b97f-9aa6d4fdefb3" />
+
+## 2. Terraformを実行してみよう
+
+### 2-1. terraform実行環境に移動
 
 ### 2-2. 初期化を行う
 
@@ -150,11 +163,7 @@ terraform apply
 
 ## 4. S3バケットにファイルをアップロードしてみる
 
-### 4-1. aws-cli実行環境に入る
-
-```
-docker compose exec aws-cli sh
-```
+### 4-1. aws-cli実行環境に移動
 
 ### 4-2. アップロードする
 
@@ -180,11 +189,7 @@ http://localhost:4566/handson-bucket/hello.html
 
 ## 5. S3バケットの変更を試してみよう
 
-### 5-1. terraform実行環境に入る
-
-```
-docker compose exec terraform sh
-```
+### 5-1. terraform実行環境に移動
 
 ### 5-2. `s3.tf` を編集して、バケットにタグを追加
 
@@ -231,13 +236,7 @@ terraform apply
 
 ### 5-5. AWS上で確認
 
-aws-cli実行環境に入る
-
-```
-docker compose exec aws-cli sh
-```
-
-バケットに紐づくタグを取得する
+aws-cli実行環境に移動し、バケットに紐づくタグを取得する
 
 ```
 aws --endpoint-url=http://localstack:4566 s3api get-bucket-tagging --bucket handson-bucket
@@ -277,6 +276,8 @@ aws --endpoint-url=http://localstack:4566 s3api get-bucket-tagging --bucket hand
 
 ### 6-2. 実行計画を確認
 
+terraform実行環境に移動し、実行計画を確認
+
 ```
 terraform plan
 ```
@@ -295,19 +296,13 @@ Plan: 0 to add, 0 to change, 1 to destroy.
 
 ### 6-3. オブジェクトを削除
 
-aws-cli実行環境に入る
-
-```
-docker compose exec aws-cli sh
-```
-
-オブジェクトを削除
+aws-cli実行環境に移動し、オブジェクトを削除
 
 ```
 aws --endpoint-url=http://localstack:4566 s3 rm s3://localstack-test-bucket/ --recursive
 ```
 
-もしかしたらこれも必要かも（バージョニングが効いてる場合）
+もしかしたらこれも必要かも
 
 ```
 aws --endpoint-url=http://localstack:4566 s3api delete-object --bucket handson-bucket --key hello.html
@@ -315,7 +310,7 @@ aws --endpoint-url=http://localstack:4566 s3api delete-object --bucket handson-b
 
 ### 6-3. AWSに反映
 
-terraform実行環境に入る
+terraform実行環境に移動し、AWSに反映
 
 ```
 terraform apply
@@ -327,13 +322,7 @@ terraform apply
 
 ### 6-4. AWS上で確認
 
-aws-cli実行環境に入る
-
-```
-docker compose exec aws-cli sh
-```
-
-バケット一覧を取得する
+aws-cli実行環境に移動し、バケット一覧を取得する
 
 ```
 aws --endpoint-url=http://localstack:4566 s3api list-buckets
