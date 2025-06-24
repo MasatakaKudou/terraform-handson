@@ -1,40 +1,33 @@
 # terraform-handson
 
-ローカルでterraformを試そう
+ローカル環境で Terraform を使って、疑似AWS環境（LocalStack）上に S3 バケットを作成・操作してみましょう
 
 ## 0. 事前準備
 
-`docker compose` or `docker-compose` を使える
+- docker compose（v2系）または docker-compose（v1系）が使える状態であること
 
 ## 1. ハンズオン環境の準備
 
-### 1-1. クローンする
+### 1-1. リポジトリをクローン
 
 ```
 git clone git@github.com:MasatakaKudou/terraform-handson.git
+cd terraform-handson
 ```
 
-### 1-2. プロジェクトに移動しコンテナ起動
+### 1-2. コンテナを起動
 
 ```
 docker compose up -d
 ```
 
-or
+※ `docker-compose` を使用してもOKです。以降は `docker compose` 表記で統一します
 
-```
-docker-compose up -d
-```
-
-以降は `docker compose` をベースに説明していく
-
-### 1-3. 期待しているコンテナが立ち上がっているか確認
+### 1-3. コンテナの起動確認
 
 ```
 docker compose ps
 ```
-
-以下コンテナが立ち上がる想定
 
 | コンテナ名 | 用途 |
 | ---- | ---- |
@@ -42,30 +35,18 @@ docker compose ps
 | localstack | 擬似AWS環境 |
 | terraform | terraform実行環境 |
 
-`STATUS` が全てUpになってればOK
+全コンテナの `STATUS` が `Up` であることを確認。
 
-### 1-4. Terraform/AWS CLI実行環境を行き来するため、ターミナルを2分割して操作する
+### 1-4. ターミナルを2分割しておくと便利
 
-terraform実行環境に以下コマンドで入る
+- Terraform 操作用（`terraform` コンテナ）
+- AWS CLI 操作用（`aws-cli` コンテナ）
 
-```
-docker compose exec terraform sh
-```
-aws-cli実行環境に以下コマンドで入る
+※ すでに両方入っている前提のため、以降はコンテナへの `exec` コマンドは省略
 
-```
-docker compose exec aws-cli sh
-```
+## 2. Terraformを実行してみよう（terraformコンテナ）
 
-イメージは以下の通り
-
-<img width="1504" alt="スクリーンショット 2025-06-24 14 12 50" src="https://github.com/user-attachments/assets/ebbc6b0c-6994-45e8-b97f-9aa6d4fdefb3" />
-
-## 2. Terraformを実行してみよう
-
-### 2-1. terraform実行環境に移動
-
-### 2-2. 初期化を行う
+### 2-1. 初期化を行う
 
 ```
 terraform init
@@ -75,7 +56,7 @@ terraform init
 
 `Terraform has been successfully initialized!`
 
-### 2-3. 実行計画をプレビュー
+### 2-2. 実行計画をプレビュー
 
 ```
 terraform plan
@@ -85,7 +66,7 @@ terraform plan
 
 `No changes. Your infrastructure matches the configuration.`
 
-## 3. S3バケットを作成してAWSに反映してみよう
+## 3. S3バケットを作成してAWSに反映してみよう（terraformコンテナ）
 
 ### 3-1. カレントディレクトリに`s3.tf`を作成し、以下を記述
 
@@ -161,11 +142,9 @@ terraform apply
 
 `Apply complete! Resources: 1 added, 0 changed, 0 destroyed.`
 
-## 4. S3バケットにファイルをアップロードしてみる
+## 4. S3バケットにファイルをアップロードしてみる（aws-cliコンテナ）
 
-### 4-1. aws-cli実行環境に移動
-
-### 4-2. アップロードする
+### 4-1. HTMLをアップロード
 
 ```
 aws --endpoint-url=http://localstack:4566 s3 cp hello.html s3://handson-bucket/
@@ -187,11 +166,9 @@ http://localhost:4566/handson-bucket/hello.html
 
 ![スクリーンショット 2025-06-23 9 48 32](https://github.com/user-attachments/assets/abd69ce1-321d-428c-9723-7cff469208eb)
 
-## 5. S3バケットの変更を試してみよう
+## 5. S3バケットを変更してみよう（terraformコンテナ）
 
-### 5-1. terraform実行環境に移動
-
-### 5-2. `s3.tf` を編集して、バケットにタグを追加
+### 5-1. `s3.tf` を編集して、バケットにタグを追加
 
 ```hcl
 resource "aws_s3_bucket" "s3-bucket" {
@@ -204,7 +181,7 @@ resource "aws_s3_bucket" "s3-bucket" {
 }
 ```
 
-### 5-3. 実行計画を確認
+### 5-2. 実行計画を確認
 
 ```
 terraform plan
@@ -224,7 +201,7 @@ terraform plan
 Plan: 0 to add, 1 to change, 0 to destroy.
 ```
 
-### 5-4. AWSに反映
+### 5-3. AWSに反映
 
 ```
 terraform apply
@@ -234,9 +211,9 @@ terraform apply
 
 `Apply complete! Resources: 0 added, 1 changed, 0 destroyed.`
 
-### 5-5. AWS上で確認
+## 6. AWS上でS3バケットの変更を確認してみよう（aws-cliコンテナ）
 
-aws-cli実行環境に移動し、バケットに紐づくタグを取得する
+バケットに紐づくタグを取得する
 
 ```
 aws --endpoint-url=http://localstack:4566 s3api get-bucket-tagging --bucket handson-bucket
@@ -259,7 +236,7 @@ aws --endpoint-url=http://localstack:4566 s3api get-bucket-tagging --bucket hand
 }
 ```
 
-## 6. S3バケットの削除を試してみよう
+## 7. S3バケットを削除してみよう
 
 ### 6-1. `s3.tf` をコメントアウト
 
