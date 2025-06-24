@@ -236,7 +236,7 @@ aws --endpoint-url=http://localstack:4566 s3api get-bucket-tagging --bucket hand
 }
 ```
 
-## 7. S3バケットを削除してみよう
+## 7. S3バケットを削除してみよう（terraformコンテナ）
 
 ### 6-1. `s3.tf` をコメントアウト
 
